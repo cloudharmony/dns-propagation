@@ -1,0 +1,54 @@
+DNS Propagation Latency Benchmark
+
+DNS propagation latency is the amount of time required for a DNS change to be 
+pushed to the authoritative DNS servers for a zone. This benchmark repository
+measures DNS latency using any number of compute resources. To do so, the 
+compute resources query authoritative DNS servers for a runtime defined zone
+update. Once the zone update is detected, the runtime will be captured and 
+returned as the propagation latency. For accurate metrics, this benchmark 
+should be scheduled to execute precisely when the DNS changes will be submitted
+to the provider. This benchmark requires dig and php be installed on compute 
+resources where it is installed.
+
+RUNTIME PARAMETERS:
+* answer:    (REQUIRED) Expected response to the question (e.g. answer=4.5.6.7)
+* debug:     (1|0) - whether or not to enable debug statements in the iteration
+             output logs (default is off)
+* multiple:  (1|0) - whether to require a valid answer from all DNS servers or
+             a single server. Default behavior is multiple=0, meaning latency 
+             will be captured for the first server that responds correctly.
+             If multiple=1, multiple latency measurements will be captured, 
+             for each server - and test execution will continue until all 
+             servers have responded
+* options    other dig query options (e.g. -p "options=+notcp +time=10")
+* question:  (REQUIRED) DNS record to query (e.g. question=www) - do not
+             include the zone in the question
+* servers:   Comma separated list of DNS servers that should be queried... if 
+             not specified, the authoritative servers for 'zone' will be
+						 assumed
+* spacing:   The amount of time to wait in seconds between each query iteration
+             (default spacing is 5 seconds)
+* zone:      (REQUIRED) The DNS zone (domain name) being tested
+
+METRIC:
+* latency:   DNS propagation latency metric(s) - multiple metrics may be 
+             returned if multiple=1 and multiple authoritative servers are
+             assigned to the zone (or explicitly specified using the 'servers'
+             runtime parameter). Latency is measured in seconds with 4 decimal
+             places
+* [server]:  latency metrics for individual servers. If multiple=1, multiple
+             metrics will be returned, one for each server, otherwise, only 1 
+             such metric will be returned associated with the server that first 
+             responded with a correct answer
+
+EXAMPLE [multiple=0]:
+latency=31.4529
+ns-1607.awsdns-08.co.uk=31.4529
+
+EXAMPLE [multiple=1]:
+latency=31.4529
+latency=36.4397
+latency=23.8576
+ns-1607.awsdns-08.co.uk=31.4529
+ns-266.awsdns-33.com=36.4397
+ns-1195.awsdns-21.org=23.8576
