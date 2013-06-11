@@ -74,8 +74,13 @@ if ($bm_debug) bm_log_msg("Test iteration finished with status code $status", ba
 
 if (!$status && count($latency)) {
 	print("\n\n[results]\n");
-	foreach($latency as $server => $l) print("latency=$l\n");
-	foreach($latency as $server => $l) print("$server=$l\n");
+	$segment = $bm_multiple ? 1 : '';
+	foreach($latency as $server => $l) {
+		print("latency${segment}=${l}\n");
+		print("ns${segment}=${server}\n");
+		if ($bm_multiple) $segment++;
+		else break;
+	}
 }
 
 exit($status);

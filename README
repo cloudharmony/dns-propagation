@@ -27,7 +27,7 @@ RUNTIME PARAMETERS:
              not specified, the authoritative servers for 'zone' will be
 						 assumed
 * spacing:   The amount of time to wait in seconds between each query iteration
-             (default spacing is 5 seconds)
+             (default spacing is 1 second)
 * zone:      (REQUIRED) The DNS zone (domain name) being tested
 
 METRIC:
@@ -41,14 +41,17 @@ METRIC:
              such metric will be returned associated with the server that first 
              responded with a correct answer
 
+
+The output of this benchmark varies depending on the 'multiple' parameter value:
+
 EXAMPLE [multiple=0]:
 latency=31.4529
-ns-1607.awsdns-08.co.uk=31.4529
+ns=ns-1607.awsdns-08.co.uk
 
 EXAMPLE [multiple=1]:
-latency=31.4529
-latency=36.4397
-latency=23.8576
-ns-1607.awsdns-08.co.uk=31.4529
-ns-266.awsdns-33.com=36.4397
-ns-1195.awsdns-21.org=23.8576
+latency1=31.4529
+ns1=ns-1607.awsdns-08.co.uk
+latency2=36.4397
+ns2=ns-266.awsdns-33.com
+latency3=23.8576
+ns3=ns-1195.awsdns-21.org

@@ -40,7 +40,7 @@ if ($bm_servers = getenv('bm_param_servers') ? explode(',', getenv('bm_param_ser
 
 // spacing
 $bm_spacing = getenv('bm_param_spacing');
-if (!$bm_spacing || !is_numeric($bm_spacing) || $bm_spacing < 0) $bm_spacing = 5;
+if (!$bm_spacing || !is_numeric($bm_spacing) || $bm_spacing < 0) $bm_spacing = 1;
 
 // zone
 $bm_zone = getenv('bm_param_zone');
@@ -126,11 +126,17 @@ function bm_get_servers() {
  * @param int $line1 secondary line number
  * @return void
  */
+$bm_error_level = error_reporting();
 function bm_log_msg($msg, $source=NULL, $line=NULL, $error=FALSE, $source1=NULL, $line1=NULL) {
+	global $bm_error_level;
 	$source = basename($source);
 	if ($source1) $source1 = basename($source1);
 	$exec_time = bm_exec_time();
-	printf("%-24s %-12s %-12s %s\n", date('m/d/Y H:i:s T'), bm_exec_time() . 's', 
+	// avoid timezone errors
+	error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
+	$timestamp = date('m/d/Y H:i:s T');
+	error_reporting($bm_error_level);
+	printf("%-24s %-12s %-12s %s\n", $timestamp, bm_exec_time() . 's', 
 				 $source ? str_replace('.php', '', $source) . ($line ? ':' . $line : '') : '', 
 				 ($error ? 'ERROR - ' : '') . $msg . 
 				 ($source1 ? ' [' . str_replace('.php', '', $source1) . ($line1 ? ":$line1" : '') . ']' : ''));
